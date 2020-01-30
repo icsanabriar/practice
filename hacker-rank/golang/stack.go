@@ -63,7 +63,7 @@ func main() {
 				cache = append(cache, max)
 			}
 
-			// Push the element to the stack
+			// Push the element to the stack.
 			stack = append(stack, e)
 
 		} else {

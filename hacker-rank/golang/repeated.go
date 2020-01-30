@@ -44,17 +44,17 @@ func repeatedString(s string, n int64) int64 {
 
 	if split != 0 {
 		sort.Ints(cacheChar)
-		breaked := false
+		broken := false
 
 		for i := range cacheChar {
 			if split <= int64(cacheChar[i]) {
 				repeated = repeated + int64(i)
-				breaked = true
+				broken = true
 				break
 			}
 		}
 
-		if !breaked {
+		if !broken {
 			repeated = repeated + int64(len(cacheChar))
 		}
 	}

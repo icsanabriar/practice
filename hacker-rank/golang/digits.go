@@ -26,10 +26,10 @@ func findDigits(n int32) int {
 	divisorDigit := false
 	counter := 0
 	originalN := n
-	previousDigit := map[int32]bool{}
+	previousDigit := make(map[int32]bool)
 
 	for n > 0 {
-		currentDigit := n % 10 // current digit
+		currentDigit := n % 10
 
 		if currentDigit != 0 {
 			if val, ok := previousDigit[currentDigit]; !ok {

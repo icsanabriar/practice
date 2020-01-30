@@ -34,55 +34,55 @@ func prime(previous int32) int32 {
 }
 
 // waiter separates the given array of plates (number) into Ai Bi piles doing q iterations.
-// Returns an array of ints with the order of the piles B0, B1, .. Bi, Ai taking into account the
-// TOP element which is the last one of the pile.
+// Returns an array of ints with the order of the piles B0, B1, .. Bi, Ai taking into account
+// the TOP element which is the last one of the pile.
 func waiter(number []int32, q int) []int32 {
-	apile := make(map[int][]int32)
-	bpile := make(map[int][]int32)
+	a := make(map[int][]int32)
+	b := make(map[int][]int32)
 	p := int32(2)
 
-	// Build piles from Ai.
+	// Build piles from ai.
 	for i := 1; i <= q; i++ {
 		for j := len(number) - 1; j >= 0; j-- {
 			e := number[j]
 			if e%p == 0 {
-				if val, ok := bpile[i]; ok {
-					bpile[i] = append(val, e)
+				if val, ok := b[i]; ok {
+					b[i] = append(val, e)
 				} else {
-					bpile[i] = []int32{e}
+					b[i] = []int32{e}
 				}
 			} else {
-				if val, ok := apile[i]; ok {
-					apile[i] = append(val, e)
+				if val, ok := a[i]; ok {
+					a[i] = append(val, e)
 				} else {
-					apile[i] = []int32{e}
+					a[i] = []int32{e}
 				}
 			}
 		}
-		number = apile[i]
-		delete(apile, i)
+		number = a[i]
+		delete(a, i)
 		p = prime(p)
 	}
 
 	result := make([]int32, 0)
 
-	// Sort keys of bpile.
-	keys := make([]int, 0, len(bpile))
-	for k := range bpile {
+	// Sort keys of b.
+	keys := make([]int, 0, len(b))
+	for k := range b {
 		keys = append(keys, k)
 	}
 
 	sort.Ints(keys)
 
-	// Append bpile values.
+	// Append b values.
 	for _, k := range keys {
-		val := bpile[k]
+		val := b[k]
 		for i := len(val) - 1; i >= 0; i-- {
 			result = append(result, val[i])
 		}
 	}
 
-	// Append apile values.
+	// Append a values.
 	for i := len(number) - 1; i >= 0; i-- {
 		result = append(result, number[i])
 	}
