@@ -27,7 +27,7 @@ func matchingStrings(strings []string, queries []string) []int32 {
 	cache := make(map[string]int32)
 
 	// Count the number of strings and store in a map
-	for _,e := range strings {
+	for _, e := range strings {
 
 		if val, ok := cache[e]; ok {
 			cache[e] = val + 1
@@ -39,7 +39,7 @@ func matchingStrings(strings []string, queries []string) []int32 {
 	result := make([]int32, 0)
 
 	// Find matches of queries
-	for _,e := range queries {
+	for _, e := range queries {
 		result = append(result, cache[e])
 	}
 
@@ -48,14 +48,14 @@ func matchingStrings(strings []string, queries []string) []int32 {
 
 // main function provided by hacker rank to execute the code on platform.
 func main() {
-	reader := bufio.NewReaderSize(os.Stdin, 1024 * 1024)
+	reader := bufio.NewReaderSize(os.Stdin, 1024*1024)
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	checkError(err)
 
 	defer stdout.Close()
 
-	writer := bufio.NewWriterSize(stdout, 1024 * 1024)
+	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	stringsCount, err := strconv.ParseInt(readLine(reader), 10, 64)
 	checkError(err)
@@ -82,7 +82,7 @@ func main() {
 	for i, resItem := range res {
 		fmt.Fprintf(writer, "%d", resItem)
 
-		if i != len(res) - 1 {
+		if i != len(res)-1 {
 			fmt.Fprintf(writer, "\n")
 		}
 	}
