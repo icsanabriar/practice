@@ -22,35 +22,38 @@ import (
 	"strings"
 )
 
-// stack structure compose by an array.
-type stack struct {
-	arr []int32
+// queue structure compose by two stacks.
+type queue struct {
+	recipient []int32
+	messenger []int32
 }
 
-// push is responsible for adding the element to the stack.
-func (s *stack) push(e int32) {
-	s.arr = append(s.arr, e)
+// queueElement is responsible of queuing the given x into recipient stack.
+func (q *queue) queueElement(x int32) {
+	q.recipient = append(q.recipient, x)
 }
 
-// pushMax is responsible for adding the element to the stack.
-func (s *stack) pushMax(e int32) {
-	max := e
+// transfer is responsible of moving elements from recipient to messenger stack.
+func (q *queue) transferElements() {
 
-	if len(s.arr) > 0 && max < s.peek() {
-		max = s.peek()
+	if len(q.messenger) == 0 {
+		for len(q.recipient) > 0 {
+			q.messenger = append(q.messenger, q.recipient[len(q.recipient)-1])
+			q.recipient = q.recipient[:len(q.recipient)-1]
+		}
 	}
-
-	s.arr = append(s.arr, max)
 }
 
-// pop is responsible for deleting the top element of the stack.
-func (s *stack) pop() {
-	s.arr = s.arr[:len(s.arr)-1]
+// dequeueElement is responsible of removing the first element of the queue using transfer.
+func (q *queue) dequeueElement() {
+	q.transferElements()
+	q.messenger = q.messenger[:len(q.messenger)-1]
 }
 
-// peek is responsible for getting the element at the top of the stack.
-func (s *stack) peek() int32 {
-	return s.arr[len(s.arr)-1]
+// firstElement is responsible of getting the first element of the queue.
+func (q *queue) firstElement() int32 {
+	q.transferElements()
+	return q.messenger[len(q.messenger)-1]
 }
 
 // main function provided by hacker rank to execute the code on platform.
@@ -68,35 +71,30 @@ func main() {
 	checkError(err)
 	n := int32(nTemp)
 
-	var s = stack{}
-	var maxStack = stack{}
+	var q = queue{}
 
 	for i := 0; i < int(n); i++ {
 		command := strings.Split(readLine(reader), " ")
 
-		// Command 1 is the only two parameters.
+		// Command 1 is the only one with parameters.
 		if len(command) == 2 {
-
-			eTemp, err := strconv.ParseInt(command[1], 10, 64)
+			xTemp, err := strconv.ParseInt(command[1], 10, 64)
 			checkError(err)
-			e := int32(eTemp)
+			x := int32(xTemp)
 
-			// Push the element to the stacks.
-			s.push(e)
-			maxStack.pushMax(e)
+			// Queue element into recipient stack.
+			q.queueElement(x)
 
 		} else {
 
-			// Check command 2 to delete top element from the stack and cache.
+			// Check command 2 to dequeue element.
 			if command[0] == "2" {
 
-				s.pop()
-				maxStack.pop()
+				q.dequeueElement()
 
 			} else {
-
-				// Print the maximum value using the cache.
-				fmt.Fprintf(writer, "%d\n", maxStack.peek())
+				// Print the first element on the queue.
+				fmt.Fprintf(writer, "%d\n", q.firstElement())
 			}
 		}
 	}

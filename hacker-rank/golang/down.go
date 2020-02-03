@@ -21,10 +21,10 @@ import (
 	"strconv"
 )
 
-// Maximum value of N.
+// maxN is the maximum value of N.
 const maxN = int32(1000000)
 
-// Define map to cache steps to 0.
+// cache is a map to cache steps to 0.
 var cache = buildCache()
 
 // min returns the minor of a or b.

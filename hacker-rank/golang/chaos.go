@@ -22,7 +22,7 @@ import (
 	"strings"
 )
 
-// Define maximum constant of maximum bribes allowed.
+// maxBribes defines maximum constant of maximum bribes allowed.
 const maxBribes = int32(2)
 
 // max returns the larger of a or b.

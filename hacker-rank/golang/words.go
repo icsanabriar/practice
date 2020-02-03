@@ -21,7 +21,7 @@ import (
 	"strconv"
 )
 
-// Define static map for numbers in string.
+// numberString defines static map for numbers in string.
 var numberString = map[int32]string{
 	1:  "one",
 	2:  "two",
