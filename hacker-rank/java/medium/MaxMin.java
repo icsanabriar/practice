@@ -84,5 +84,4 @@ public class MaxMin {
 
         scanner.close();
     }
-
 }
