@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package medium
 
 import (
 	"bufio"
@@ -21,35 +21,41 @@ import (
 	"strconv"
 )
 
-// findDigits return an integer representing the number of digits of d that are divisor of given n.
-func findDigits(n int32) int {
-	divisorDigit := false
-	counter := 0
-	originalN := n
-	previousDigit := make(map[int32]bool)
+// maxN is the maximum value of N.
+const maxN = int32(1000000)
 
-	for n > 0 {
-		currentDigit := n % 10
+// cache is a map to cache steps to 0.
+var cache = buildCache()
 
-		if currentDigit != 0 {
-			if val, ok := previousDigit[currentDigit]; !ok {
+// min returns the minor of a or b.
+func min(a, b int32) int32 {
+	if a > b {
+		return b
+	}
+	return a
+}
 
-				divisorDigit = (originalN % currentDigit) == 0
-				previousDigit[currentDigit] = divisorDigit
+// buildCache generates an array to memorize the steps required to down to 0 specific index of the array.
+func buildCache() []int32 {
+	temp := make([]int32, maxN+1)
 
-				if divisorDigit {
-					counter += 1
-				}
+	for i := int32(1); i < maxN; i++ {
+		temp[i] = temp[i-1] + 1
 
-			} else if val {
-				counter += 1
+		for j := int32(2); j*j <= i; j++ {
+
+			if i%j == 0 {
+				temp[i] = min(temp[i], temp[i/j]+1)
 			}
 		}
-
-		n = n / 10
 	}
 
-	return counter
+	return temp
+}
+
+// downToZero reads the given n value from cache and return it.
+func downToZero(n int32) int32 {
+	return cache[n]
 }
 
 // main function provided by hacker rank to execute the code on platform.
@@ -63,16 +69,16 @@ func main() {
 
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	tTemp, err := strconv.ParseInt(readLine(reader), 10, 64)
+	qTemp, err := strconv.ParseInt(readLine(reader), 10, 64)
 	checkError(err)
-	t := int32(tTemp)
+	q := int32(qTemp)
 
-	for tItr := 0; tItr < int(t); tItr++ {
+	for qItr := 0; qItr < int(q); qItr++ {
 		nTemp, err := strconv.ParseInt(readLine(reader), 10, 64)
 		checkError(err)
 		n := int32(nTemp)
 
-		result := findDigits(n)
+		result := downToZero(n)
 
 		fmt.Fprintf(writer, "%d\n", result)
 	}

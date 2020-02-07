@@ -12,23 +12,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package easy
 
 import (
 	"bufio"
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 )
 
-// rotLeft shifts each element of the array a given d rotations.
-func rotLeft(a []int32, d int32) []int32 {
-	// Split array according to d.
-	leftSide := a[d:]
-	rightSide := a[0:d]
+// findDigits return an integer representing the number of digits of d that are divisor of given n.
+func findDigits(n int32) int {
+	divisorDigit := false
+	counter := 0
+	originalN := n
+	previousDigit := make(map[int32]bool)
 
-	return append(leftSide, rightSide...)
+	for n > 0 {
+		currentDigit := n % 10
+
+		if currentDigit != 0 {
+			if val, ok := previousDigit[currentDigit]; !ok {
+
+				divisorDigit = (originalN % currentDigit) == 0
+				previousDigit[currentDigit] = divisorDigit
+
+				if divisorDigit {
+					counter += 1
+				}
+
+			} else if val {
+				counter += 1
+			}
+		}
+
+		n = n / 10
+	}
+
+	return counter
 }
 
 // main function provided by hacker rank to execute the code on platform.
@@ -42,38 +63,19 @@ func main() {
 
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	nd := strings.Split(readLine(reader), " ")
-
-	nTemp, err := strconv.ParseInt(nd[0], 10, 64)
+	tTemp, err := strconv.ParseInt(readLine(reader), 10, 64)
 	checkError(err)
-	n := int32(nTemp)
+	t := int32(tTemp)
 
-	dTemp, err := strconv.ParseInt(nd[1], 10, 64)
-	checkError(err)
-	d := int32(dTemp)
-
-	aTemp := strings.Split(readLine(reader), " ")
-
-	var a []int32
-
-	for i := 0; i < int(n); i++ {
-		aItemTemp, err := strconv.ParseInt(aTemp[i], 10, 64)
+	for tItr := 0; tItr < int(t); tItr++ {
+		nTemp, err := strconv.ParseInt(readLine(reader), 10, 64)
 		checkError(err)
-		aItem := int32(aItemTemp)
-		a = append(a, aItem)
+		n := int32(nTemp)
+
+		result := findDigits(n)
+
+		fmt.Fprintf(writer, "%d\n", result)
 	}
-
-	result := rotLeft(a, d)
-
-	for i, resultItem := range result {
-		fmt.Fprintf(writer, "%d", resultItem)
-
-		if i != len(result)-1 {
-			fmt.Fprintf(writer, " ")
-		}
-	}
-
-	fmt.Fprintf(writer, "\n")
 
 	writer.Flush()
 }

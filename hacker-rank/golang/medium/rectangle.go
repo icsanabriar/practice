@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package medium
 
 import (
 	"bufio"
@@ -22,33 +22,42 @@ import (
 	"strings"
 )
 
-// hourglassSum calculate the maximum hourglass sum in the given arr.
-func hourglassSum(arr [][]int32) int32 {
-	maximum := int32(-64)
-	var i, j int
-	var sum int32
+// largestRectangle return an integer representing the largest rectangle that can be formed within the bounds of
+// consecutive buildings given the heights on array h.
+func largestRectangle(h []int32) int64 {
 
-	// Iterate over rows of arr.
-	for i = 0; i < 4; i++ {
-		for j = 0; j < 4; j++ {
-			// First row of the glass.
-			sum = arr[i][j]
-			sum += arr[i][j+1]
-			sum += arr[i][j+2]
-			// Second row of the glass.
-			sum += arr[i+1][j+1]
-			// Third row of the glass.
-			sum += arr[i+2][j]
-			sum += arr[i+2][j+1]
-			sum += arr[i+2][j+2]
+	largest := int64(0)
+	var nearest int32
 
-			if maximum < sum {
-				maximum = sum
+	for i, hi := range h {
+		nearest = 1
+
+		// Go to the right and check nearest.
+		for j := i + 1; j < len(h); j++ {
+			if hi > h[j] {
+				break
+			} else {
+				nearest += 1
 			}
+		}
+
+		// Go to the left and check nearest.
+		for j := i - 1; j >= 0; j-- {
+			if hi > h[j] {
+				break
+			} else {
+				nearest += 1
+			}
+		}
+
+		area := int64(hi * nearest)
+
+		if area > largest {
+			largest = area
 		}
 	}
 
-	return maximum
+	return largest
 }
 
 // main function provided by hacker rank to execute the code on platform.
@@ -62,26 +71,22 @@ func main() {
 
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	var arr [][]int32
-	for i := 0; i < 6; i++ {
-		arrRowTemp := strings.Split(readLine(reader), " ")
+	nTemp, err := strconv.ParseInt(readLine(reader), 10, 64)
+	checkError(err)
+	n := int32(nTemp)
 
-		var arrRow []int32
-		for _, arrRowItem := range arrRowTemp {
-			arrItemTemp, err := strconv.ParseInt(arrRowItem, 10, 64)
-			checkError(err)
-			arrItem := int32(arrItemTemp)
-			arrRow = append(arrRow, arrItem)
-		}
+	hTemp := strings.Split(readLine(reader), " ")
 
-		if len(arrRow) != int(6) {
-			panic("Bad input")
-		}
+	var h []int32
 
-		arr = append(arr, arrRow)
+	for i := 0; i < int(n); i++ {
+		hItemTemp, err := strconv.ParseInt(hTemp[i], 10, 64)
+		checkError(err)
+		hItem := int32(hItemTemp)
+		h = append(h, hItem)
 	}
 
-	result := hourglassSum(arr)
+	result := largestRectangle(h)
 
 	fmt.Fprintf(writer, "%d\n", result)
 

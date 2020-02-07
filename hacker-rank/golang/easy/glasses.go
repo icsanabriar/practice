@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package easy
 
 import (
 	"bufio"
@@ -22,30 +22,33 @@ import (
 	"strings"
 )
 
-// jumpingOnClouds return an integer representing the minimum number of jumps required to get to the end of given
-// array c taking into account save jumps.
-func jumpingOnClouds(c []int32) int32 {
+// hourglassSum calculate the maximum hourglass sum in the given arr.
+func hourglassSum(arr [][]int32) int32 {
+	maximum := int32(-64)
+	var i, j int
+	var sum int32
 
-	i := 0
-	jumps := int32(0)
+	// Iterate over rows of arr.
+	for i = 0; i < 4; i++ {
+		for j = 0; j < 4; j++ {
+			// First row of the glass.
+			sum = arr[i][j]
+			sum += arr[i][j+1]
+			sum += arr[i][j+2]
+			// Second row of the glass.
+			sum += arr[i+1][j+1]
+			// Third row of the glass.
+			sum += arr[i+2][j]
+			sum += arr[i+2][j+1]
+			sum += arr[i+2][j+2]
 
-	for i < len(c) {
-
-		if i+2 < len(c) {
-			twoSteps := c[i+2]
-			if twoSteps == 0 {
-				i = i + 2
-			} else {
-				i = i + 1
+			if maximum < sum {
+				maximum = sum
 			}
-		} else {
-			i = i + 1
 		}
-
-		jumps++
 	}
 
-	return jumps - 1
+	return maximum
 }
 
 // main function provided by hacker rank to execute the code on platform.
@@ -59,22 +62,26 @@ func main() {
 
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	nTemp, err := strconv.ParseInt(readLine(reader), 10, 64)
-	checkError(err)
-	n := int32(nTemp)
+	var arr [][]int32
+	for i := 0; i < 6; i++ {
+		arrRowTemp := strings.Split(readLine(reader), " ")
 
-	cTemp := strings.Split(readLine(reader), " ")
+		var arrRow []int32
+		for _, arrRowItem := range arrRowTemp {
+			arrItemTemp, err := strconv.ParseInt(arrRowItem, 10, 64)
+			checkError(err)
+			arrItem := int32(arrItemTemp)
+			arrRow = append(arrRow, arrItem)
+		}
 
-	var c []int32
+		if len(arrRow) != int(6) {
+			panic("Bad input")
+		}
 
-	for i := 0; i < int(n); i++ {
-		cItemTemp, err := strconv.ParseInt(cTemp[i], 10, 64)
-		checkError(err)
-		cItem := int32(cItemTemp)
-		c = append(c, cItem)
+		arr = append(arr, arrRow)
 	}
 
-	result := jumpingOnClouds(c)
+	result := hourglassSum(arr)
 
 	fmt.Fprintf(writer, "%d\n", result)
 

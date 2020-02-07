@@ -12,52 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package easy
 
 import (
 	"bufio"
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 )
 
-// largestRectangle return an integer representing the largest rectangle that can be formed within the bounds of
-// consecutive buildings given the heights on array h.
-func largestRectangle(h []int32) int64 {
+// countingValleys calculates how many valleys were walked by Gary on the given road s.
+// noinspection GoUnusedParameter
+func countingValleys(n int32, s string) int32 {
 
-	largest := int64(0)
-	var nearest int32
+	counter := int32(0)
+	level := int32(0)
 
-	for i, hi := range h {
-		nearest = 1
+	for _, c := range s {
+		previousLevel := level
 
-		// Go to the right and check nearest.
-		for j := i + 1; j < len(h); j++ {
-			if hi > h[j] {
-				break
-			} else {
-				nearest += 1
-			}
+		if string(c) == "U" {
+			level++
+		} else {
+			level--
 		}
 
-		// Go to the left and check nearest.
-		for j := i - 1; j >= 0; j-- {
-			if hi > h[j] {
-				break
-			} else {
-				nearest += 1
-			}
-		}
-
-		area := int64(hi * nearest)
-
-		if area > largest {
-			largest = area
+		if previousLevel < 0 && level == 0 {
+			counter++
 		}
 	}
 
-	return largest
+	return counter
 }
 
 // main function provided by hacker rank to execute the code on platform.
@@ -75,18 +60,9 @@ func main() {
 	checkError(err)
 	n := int32(nTemp)
 
-	hTemp := strings.Split(readLine(reader), " ")
+	s := readLine(reader)
 
-	var h []int32
-
-	for i := 0; i < int(n); i++ {
-		hItemTemp, err := strconv.ParseInt(hTemp[i], 10, 64)
-		checkError(err)
-		hItem := int32(hItemTemp)
-		h = append(h, hItem)
-	}
-
-	result := largestRectangle(h)
+	result := countingValleys(n, s)
 
 	fmt.Fprintf(writer, "%d\n", result)
 

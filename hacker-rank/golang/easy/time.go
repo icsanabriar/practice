@@ -12,59 +12,62 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package easy
 
 import (
 	"bufio"
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
-// countingValleys calculates how many valleys were walked by Gary on the given road s.
-// noinspection GoUnusedParameter
-func countingValleys(n int32, s string) int32 {
+// timeConversion converts the given string that contains time in 12-hour AM/PM format to military 24-hour time.
+func timeConversion(s string) string {
 
-	counter := int32(0)
-	level := int32(0)
+	// Split by Colon.
+	colon := ":"
+	split := strings.Split(s, colon)
 
-	for _, c := range s {
-		previousLevel := level
+	// Define AM / PM.
+	hour, _ := strconv.Atoi(split[0])
 
-		if string(c) == "U" {
-			level++
-		} else {
-			level--
+	if strings.HasSuffix(split[2], "AM") {
+
+		// Update Midnight hour.
+		if hour == 12 {
+			split[0] = "00"
 		}
 
-		if previousLevel < 0 && level == 0 {
-			counter++
+	} else {
+
+		// Add 12 hours to time.
+		if hour != 12 {
+			hour = hour + 12
 		}
+
+		split[0] = fmt.Sprintf("%02d", hour)
 	}
 
-	return counter
+	return split[0] + colon + split[1] + colon + split[2][0:2]
 }
 
 // main function provided by hacker rank to execute the code on platform.
 func main() {
 	reader := bufio.NewReaderSize(os.Stdin, 1024*1024)
 
-	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
+	outputFile, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	checkError(err)
 
-	defer stdout.Close()
+	defer outputFile.Close()
 
-	writer := bufio.NewWriterSize(stdout, 1024*1024)
-
-	nTemp, err := strconv.ParseInt(readLine(reader), 10, 64)
-	checkError(err)
-	n := int32(nTemp)
+	writer := bufio.NewWriterSize(outputFile, 1024*1024)
 
 	s := readLine(reader)
 
-	result := countingValleys(n, s)
+	result := timeConversion(s)
 
-	fmt.Fprintf(writer, "%d\n", result)
+	fmt.Fprintf(writer, "%s\n", result)
 
 	writer.Flush()
 }

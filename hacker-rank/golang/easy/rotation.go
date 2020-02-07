@@ -12,50 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package easy
 
 import (
 	"bufio"
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
-// maxN is the maximum value of N.
-const maxN = int32(1000000)
+// rotLeft shifts each element of the array a given d rotations.
+func rotLeft(a []int32, d int32) []int32 {
+	// Split array according to d.
+	leftSide := a[d:]
+	rightSide := a[0:d]
 
-// cache is a map to cache steps to 0.
-var cache = buildCache()
-
-// min returns the minor of a or b.
-func min(a, b int32) int32 {
-	if a > b {
-		return b
-	}
-	return a
-}
-
-// buildCache generates an array to memorize the steps required to down to 0 specific index of the array.
-func buildCache() []int32 {
-	temp := make([]int32, maxN+1)
-
-	for i := int32(1); i < maxN; i++ {
-		temp[i] = temp[i-1] + 1
-
-		for j := int32(2); j*j <= i; j++ {
-
-			if i%j == 0 {
-				temp[i] = min(temp[i], temp[i/j]+1)
-			}
-		}
-	}
-
-	return temp
-}
-
-// downToZero reads the given n value from cache and return it.
-func downToZero(n int32) int32 {
-	return cache[n]
+	return append(leftSide, rightSide...)
 }
 
 // main function provided by hacker rank to execute the code on platform.
@@ -69,19 +42,38 @@ func main() {
 
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	qTemp, err := strconv.ParseInt(readLine(reader), 10, 64)
+	nd := strings.Split(readLine(reader), " ")
+
+	nTemp, err := strconv.ParseInt(nd[0], 10, 64)
 	checkError(err)
-	q := int32(qTemp)
+	n := int32(nTemp)
 
-	for qItr := 0; qItr < int(q); qItr++ {
-		nTemp, err := strconv.ParseInt(readLine(reader), 10, 64)
+	dTemp, err := strconv.ParseInt(nd[1], 10, 64)
+	checkError(err)
+	d := int32(dTemp)
+
+	aTemp := strings.Split(readLine(reader), " ")
+
+	var a []int32
+
+	for i := 0; i < int(n); i++ {
+		aItemTemp, err := strconv.ParseInt(aTemp[i], 10, 64)
 		checkError(err)
-		n := int32(nTemp)
-
-		result := downToZero(n)
-
-		fmt.Fprintf(writer, "%d\n", result)
+		aItem := int32(aItemTemp)
+		a = append(a, aItem)
 	}
+
+	result := rotLeft(a, d)
+
+	for i, resultItem := range result {
+		fmt.Fprintf(writer, "%d", resultItem)
+
+		if i != len(result)-1 {
+			fmt.Fprintf(writer, " ")
+		}
+	}
+
+	fmt.Fprintf(writer, "\n")
 
 	writer.Flush()
 }
