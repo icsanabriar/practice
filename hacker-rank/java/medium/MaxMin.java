@@ -13,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Scanner;
 import java.util.stream.IntStream;
 
 /**
@@ -21,25 +27,24 @@ import java.util.stream.IntStream;
  * @author  Iván Camilo Sanabria (icsanabriar@googlemail.com)
  * @since   1.0.0
  */
-public class Solution {
+public class MaxMin {
 
     /**
      * Estimates the minimum value of unfairness calculated by the difference of max value and minimum value
      * of a subarray with length k of arr parameter.
      *
      * @param k   The number of elements in the array to create
-     * @param arr Array of integets to get the minimum possible value of unfairness.
+     * @param arr Array of integers to get the minimum possible value of unfairness.
      * @return Integer containing the value of minimum unfairness.
      */
-    static int maxMin(int k, int[] arr) {
+    private static int solve(int k, int[] arr) {
 
         Arrays.sort(arr);
 
         return IntStream.range(0, arr.length - k + 1)
                 .map(r -> arr[r + k - 1] - arr[r])
                 .min()
-                .getAsInt();
-
+                .orElse(0);
     }
 
     /**
@@ -70,7 +75,7 @@ public class Solution {
             arr[i] = arrItem;
         }
 
-        int result = maxMin(k, arr);
+        int result = solve(k, arr);
 
         bufferedWriter.write(String.valueOf(result));
         bufferedWriter.newLine();
