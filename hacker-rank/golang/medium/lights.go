@@ -32,7 +32,7 @@ func lights(n int32) int32 {
 		total = 2 * total % modulus
 	}
 
-	// Total - 1 to complete the serie, then add the modulus to get original value and apply module to obtain result. 
+	// Total - 1 to complete the series, then add the modulus to get original value and apply module to obtain result. 
 	return (total - 1 + modulus) % modulus
 }
 
