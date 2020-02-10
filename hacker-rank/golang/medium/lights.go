@@ -32,7 +32,7 @@ func lights(n int32) int32 {
 		total = 2 * total % modulus
 	}
 
-	// return the modulo 10e5
+	// return the modulo 10e5.
 	return (total - 1 + modulus) % modulus
 }
 
