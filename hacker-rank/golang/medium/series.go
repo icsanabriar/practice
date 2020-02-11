@@ -19,47 +19,34 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 )
 
+// module is the value to simplify the result.
+const module = 1000000007
+
 // summingSeries calculates the sum of specific series when the nth term is n2 - (n-1)2.
-func summingSeries(n int64, cache []int64) int64 {
+// Simplifying the expression it is the sum of nth odd numbers which is equal a n2.
+func summingSeries(n int64) int64 {
 
-	if n == 1 {
-		return n
-	}
+	n %= module
 
-	if n == 2 {
-		return summingSeries(n-1, cache) + ((n*n)-((n-1)*(n-1)))
-	}
-
-	if cache[n] == -1 {
-		cache[n] = summingSeries(n-1, cache) + summingSeries(n-1, cache)
-	}
-
-	return cache[n]
+	return n * n % module
 }
 
 // main function provided by hacker rank to execute the code on platform.
 func main() {
-	reader := bufio.NewReaderSize(os.Stdin, 1024 * 1024)
+	reader := bufio.NewReaderSize(os.Stdin, 1024*1024)
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	checkError(err)
 
 	defer stdout.Close()
 
-	writer := bufio.NewWriterSize(stdout, 1024 * 1024)
+	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	tTemp, err := strconv.ParseInt(readLine(reader), 10, 64)
 	checkError(err)
 	t := int32(tTemp)
-
-	cache := make([]int64, 10000000000000000)
-
-	for i := range cache {
-		cache[i] = -1
-	}
 
 	for tItr := 0; tItr < int(t); tItr++ {
 		n, err := strconv.ParseInt(readLine(reader), 10, 64)
