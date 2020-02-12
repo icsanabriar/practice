@@ -36,10 +36,9 @@ public class Prime {
      * @param args Arguments of the program.
      */
     public static void main(String[] args) {
+
         String n = scanner.nextLine();
-
         BigInteger number = new BigInteger(n);
-
 
         if (number.isProbablePrime(1)) {
             System.out.println("prime");
